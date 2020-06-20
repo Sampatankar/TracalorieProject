@@ -28,29 +28,6 @@ const StorageCtrl = (function () {
         items = JSON.parse(localStorage.getItem('items'));
       }
       return items;
-    },
-    updateItemStorage: function (updatedItem) {
-      let items = JSON.parse(localStorage.getItem('items'));
-
-      items.forEach(function (item, index) {
-        if (updatedItem.id === item.id) {
-          items.splice(index, 1, updatedItem);
-        }
-      });
-      localStorage.setItem('items', JSON.stringify(items));
-    },
-    deleteItemFromStorage: function (id) {
-      let items = JSON.parse(localStorage.getItem('items'));
-
-      items.forEach(function (item, index) {
-        if (id === item.id) {
-          items.splice(index, 1);
-        }
-      });
-      localStorage.setItem('items', JSON.stringify(items));
-    },
-    clearItemsFromStorage: function () {
-      localStorage.removeItem('items');
     }
   }
 })();
@@ -137,6 +114,7 @@ const ItemCtrl = (function () {
           found = item;
         }
       });
+
       return found;
     },
     deleteItem: function (id) {
@@ -408,9 +386,6 @@ const App = (function (ItemCtrl, StorageCtrl, UICtrl) {
     //Add the total calories to the UI:
     UICtrl.showTotalCalories(totalCalories);
 
-    //Update the LS:
-    StorageCtrl.updateItemStorage(updatedItem);
-
     UICtrl.clearEditState();
 
     e.preventDefault();
@@ -422,7 +397,7 @@ const App = (function (ItemCtrl, StorageCtrl, UICtrl) {
     const currentItem = ItemCtrl.getCurrentItem();
 
     //Delete from the data structure:
-    ItemCtrl.deleteItem(clientInformation);
+    ItemCtrl.deleteItem(currentItem.id);
 
     //Delete it from the UI:
     UICtrl.deleteListItem(currentItem.id);
@@ -432,9 +407,6 @@ const App = (function (ItemCtrl, StorageCtrl, UICtrl) {
 
     //Add the total calories to the UI:
     UICtrl.showTotalCalories(totalCalories);
-
-    //Delete from LS:
-    StorageCtrl.deleteItemFromStorage(currentItem.id);
 
     UICtrl.clearEditState();
 
@@ -454,9 +426,6 @@ const App = (function (ItemCtrl, StorageCtrl, UICtrl) {
 
     //Remove them from UI:
     UICtrl.removeItems();
-
-    //Clear from the LS:
-    StorageCtrl.clearItemsFromStorage();
 
     //Hide the ul:
     UICtrl.hideList();
